@@ -1,0 +1,365 @@
+@page "/hangman"
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Hangman</PageTitle>
+
+
+<h1>Hangman</h1>
+<style>
+    .error-banner {
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between; /* Align items on the ends */
+        align-items: center;
+        vertical-align: middle;
+    }
+    .display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .error-banner button {
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        background-color: transparent;
+    }
+    .error-banner p {
+        vertical-align: middle;
+        margin-top: 0;
+        align-items: center;
+        margin-top: auto;
+        margin-bottom: auto;
+        text-align: left;
+    }
+    .word {
+        text-align: justify;
+        font-size: 5em;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        width: 80%; /* Set the width to 60% of the screen */
+        margin: 0 auto; /* Center the container */
+}
+
+    .word span {
+        display: inline-block;
+        width: 20px; /* Adjust as needed */
+        height: 2px;
+        background-color: #333;
+        margin: 0 5px; /* Adjust as needed */
+    .incorrect-guesses {
+    margin-top: 10px;
+}
+
+.incorrect-box {
+    margin-top: 10px;
+}
+
+.incorrect-box p {
+    font-weight: bold;
+}
+
+.dice-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
+    gap: 5px;
+}
+
+.dice-face {
+    width: 30px;
+    height: 30px;
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.guess {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* Adjust this property based on your desired layout */
+    align-items: center; /* Optional: Center items vertically */
+}
+.guess input {
+    flex: 1; /* This allows the input to take up remaining space */
+    margin-right: 8px; /* Optional: Add some spacing between input and button */
+}
+
+.guess button {
+    /* You can set a fixed width or adjust flex property based on your desired layout */
+    width: 100px;
+    }
+.hangman-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.form__group {
+  position: relative;
+  padding: 15px 0 0;
+  margin-top: 10px;
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+}
+.form__group button{
+    border: none;
+    outline: none;
+    background: #2f2f2f;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 40px;
+    text-align: center;
+    box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 10px;
+}
+.form__field {
+  font-family: inherit;
+  width: 90%;
+  border: 0;
+  border-bottom: 2px solid #9b9b9b9;
+  outline: 0;
+  font-size: 1.3rem;
+  color: #ffff;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #9b9b9b9;
+}
+
+.form__field:focus {
+  ~ .form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #11998e;
+    font-weight:700;    
+  }
+}
+
+
+</style>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    if (messageType == "danger")
+    {
+        <div class="alert alert-danger error-banner" role="alert">
+        
+        <p class="error-banner">@message</p>
+        <button type="button" class="btn btn-danger" @onclick="HideMessage">X</button>
+        </div>
+    } else if (messageType == "success")
+    {
+        <div class="alert alert-success error-banner" role="alert">
+        
+        <p class="error-banner">@message</p>
+        <button type="button" class="btn btn-success" @onclick="HideMessage">X</button>
+        </div>
+    } else if (messageType == "warning")
+    {
+        <div class="alert alert-warning error-banner" role="alert">
+        
+        <p class="error-banner">@message</p>
+        <button type="button" class="btn btn-warning" @onclick="HideMessage">X</button>
+        </div>
+    } else
+    {
+        <div class="alert alert-primary error-banner" role="alert">
+        
+        <p class="error-banner">@message</p>
+        <button type="button" class="btn btn-primary" @onclick="HideMessage">X</button>
+        </div>
+    }
+
+
+}
+<div class="hangman-container">
+    @if (!string.IsNullOrEmpty(word))
+    {
+        <div class="display">
+        <div class="gallows">
+        <Gallows wrongGuesses="@wrongGuesses"/>
+        </div>
+        <div class="word">
+            @string.Join(" ", displayWord).ToUpper()   
+        </div>
+
+        </div>
+    }
+</div>
+
+@if (wrongGuesses < 6){
+<div class="incorrect-box">
+    <p>Incorrect letters: @string.Join(" ",guessedLetters).ToUpper()</p>
+</div>
+<div class="guess">
+    <form @onsubmit="OnFormSubmit">
+        <input type="text" @bind="inputLetter" />
+        <button type="submit" @onclick="TestLetter">Guess</button>
+    </form>
+</div>
+<br>
+}
+else if (message == "You win!")
+{
+    <div>
+        <p>Congratulations! You win!</p>
+        <p>Press the button below to start another game</p>
+    </div>
+
+}
+else
+{
+    <div>
+        <p>Game Over!</p>
+        <p>The word was: @word</p>
+        <p>Press the button below to start another game</p>
+    </div>
+}
+   <form>
+        <button type="button" @onclick="NewGame">New Game</button>
+    </form>
+
+
+
+
+@code {
+    private string[] words;
+    private string word;
+    private char[] displayWord;
+    private int wrongGuesses;
+    private string guessedLetters;
+    private string inputLetter;
+    private Random random = new Random();
+    private string message;
+    private string messageType;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NewGame();
+    }
+
+    private void NewGame()
+    {
+        word = GetRandomWord();
+        displayWord = new char[word.Length];
+        for (int i = 0; i < word.Length; i++)
+        {
+            displayWord[i] = '_';
+        }
+        
+        wrongGuesses = 0;
+        guessedLetters = "";
+        message = "";
+    }
+
+    private void TestLetter()
+    {
+        if (wrongGuesses >= 6)
+        {
+            message = "You lose!";
+            messageType = "danger";
+            return;
+        }
+        if (string.IsNullOrEmpty(inputLetter))
+        {
+            message = "You must enter a letter";
+            messageType = "warning";
+            return;
+        }
+        if (inputLetter.Length > 1)
+        {
+            message = "You must enter a single letter";
+            messageType = "warning";
+            inputLetter = "";
+            return;
+        }
+        char letter = inputLetter.ToLower()[0];
+        if (guessedLetters.Contains(letter))
+        {
+            // You already guessed that letter
+            message = "You already guessed that letter";
+            messageType = "warning";
+        }
+
+        
+        else if (word.Contains(letter))
+        {
+            for (int i = 0; i < word.Length; i++)
+            {
+                if (word[i] == letter)
+                {
+                    displayWord[i] = letter;
+                }
+            }
+
+        } else
+        {
+            wrongGuesses++;
+
+            guessedLetters += letter;
+            guessedLetters = string.Concat(guessedLetters.OrderBy(c => c));
+        }
+        if (wrongGuesses >= 6)
+        {
+            message = "You lose!";
+            messageType = "danger";
+        }
+        inputLetter = "";
+
+
+        CheckWin();
+    }
+    
+    private void CheckWin()
+    {
+        if (displayWord.SequenceEqual(word))
+        {
+            message = "You win!";
+            messageType = "success";
+        }
+    }
+    private void OnFormSubmit()
+    {
+        // Prevent the default form submission behavior
+        JSRuntime.InvokeVoidAsync("eval", "event.preventDefault()");
+    }
+    private void HideMessage()
+    {
+        message = "";
+    }
+
+    private string GetRandomWord()
+    {
+        string path = Path.Combine(Environment.CurrentDirectory, "wwwroot", "words.txt");
+        string[] words = File.ReadAllLines(path);
+        word = words[random.Next(words.Length)];
+        if (word.Length <= 3)
+        {
+            return GetRandomWord();
+        }
+        return word;
+    }
+}

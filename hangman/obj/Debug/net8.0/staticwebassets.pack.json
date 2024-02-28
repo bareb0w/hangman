@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "/home/ollie/hangman/hangman/obj/Debug/net8.0/scopedcss/projectbundle/hangman.bundle.scp.css",
+      "PackagePath": "staticwebassets/hangman.bundle.scp.css"
+    },
+    {
+      "Id": "/home/ollie/hangman/hangman/wwwroot/app.css",
+      "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "/home/ollie/hangman/hangman/wwwroot/bootstrap/bootstrap.min.css",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Id": "/home/ollie/hangman/hangman/wwwroot/bootstrap/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Id": "/home/ollie/hangman/hangman/wwwroot/favicon.png",
+      "PackagePath": "staticwebassets/favicon.png"
+    },
+    {
+      "Id": "/home/ollie/hangman/hangman/wwwroot/words.txt",
+      "PackagePath": "staticwebassets/words.txt"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.hangman.props",
+      "PackagePath": "build\\hangman.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.hangman.props",
+      "PackagePath": "buildMultiTargeting\\hangman.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.hangman.props",
+      "PackagePath": "buildTransitive\\hangman.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.hangman.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
