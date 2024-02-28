@@ -7,7 +7,7 @@ This my hangman game which I created using C# Blazor
 
 ## Install:
 1. Clone the repository
-    `git clone github.com/bareb0w/hangman`
+    `git clone https://github.com/bareb0w/hangman`
 2. You now have every thing you need to run it using the instructions below
 ## Usage:
 - Running `dotnet watch` in the hangman directory will start an hot-reload server 
